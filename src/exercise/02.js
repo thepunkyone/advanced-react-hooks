@@ -31,18 +31,18 @@ function asyncReducer(state, action) {
 function useAsync(initialState) {
   const [state, dispatch] = React.useReducer(asyncReducer, initialState)
 
-  const run = React.useCallback(
-    promise =>
-      promise.then(
-        data => {
-          dispatch({type: 'resolved', data})
-        },
-        error => {
-          dispatch({type: 'rejected', error})
-        },
-      ),
-    [],
-  )
+  const run = React.useCallback(promise => {
+    dispatch({type: 'pending'})
+
+    return promise.then(
+      data => {
+        dispatch({type: 'resolved', data})
+      },
+      error => {
+        dispatch({type: 'rejected', error})
+      },
+    )
+  }, [])
 
   return {...state, run}
 }
